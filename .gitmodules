@@ -1,0 +1,3 @@
+[submodule "maxflow"]
+	path = maxflow
+	url = https://github.com/ntonci/maxflow
