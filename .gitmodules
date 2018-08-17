@@ -1,3 +1,4 @@
 [submodule "maxflow"]
 	path = maxflow
 	url = https://github.com/ntonci/maxflow
+	branch = feature/missing_instance
