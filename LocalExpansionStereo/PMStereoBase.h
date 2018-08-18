@@ -84,7 +84,13 @@ public:
 
 protected:
 
-	void viewConsistencyCheck(cv::Mat& check0 = cv::Mat(), cv::Mat& check1 = cv::Mat())
+	void viewConsistencyCheck()
+	{
+		cv::Mat check0 = cv::Mat();
+		cv::Mat check1 = cv::Mat();
+		viewConsistencyCheck(check0, check1);
+	}
+	void viewConsistencyCheck(cv::Mat& check0, cv::Mat& check1)
 	{
 		cv::Mat disp[2] = { stereoEnergy->computeDisparities(currentLabeling_[0]), stereoEnergy->computeDisparities(currentLabeling_[1]) };
 		cv::Mat fail[2];
@@ -196,7 +202,7 @@ protected:
 				else
 					LR[i].at<Plane>(p) = *pr;
 			}
-			
+
 			//cv::imshow(cv::format("filled%d", i), stereoEnergy->computeDisparities(LR[i]) / MAX_DISPARITY); cv::waitKey(10);
 
 		}
@@ -209,7 +215,7 @@ protected:
 		//// median filter
 		for (int i = 0; i < 2; i++){
 			cv::Mat LRcopy = LR[i].clone();
-			
+
 			#pragma omp parallel for
 			for (int y = 0; y < height; y++)
 			for (int x = 0; x < width; x++){

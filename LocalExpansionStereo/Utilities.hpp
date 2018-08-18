@@ -3,6 +3,15 @@
 #include <opencv2/core/core.hpp>
 #include <fstream>
 
+#include <stdint.h>
+
+#ifndef _MSC_VER
+typedef int8_t __int8;
+typedef int16_t __int16;
+typedef int32_t __int32;
+typedef int64_t __int64;
+#endif
+
 namespace cvutils
 {
 	namespace io
@@ -22,8 +31,13 @@ namespace cvutils
 		{
 			int w, h;
 			char buf[256];
-			FILE *f;
+#ifdef _MSC_VER
+	  	FILE *f;
 			fopen_s(&f, filename.c_str(), "rb");
+#else
+			FILE *f = fopen(filename.c_str(), "rb");
+#endif
+
 			if (f == NULL)
 			{
 				//wprintf(L"PFM file absent: %s\n\n", filename.c_str());
@@ -35,7 +49,7 @@ namespace cvutils
 			if (strcmp(buf, "Pf") == 0) channel = 1;
 			else if (strcmp(buf, "PF") == 0) channel = 3;
 			else {
-				printf(buf);
+				printf("%s\n", buf);
 				printf("Not a 1/3 channel PFM file.\n");
 				return cv::Mat();
 			}
@@ -86,8 +100,13 @@ namespace cvutils
 			int width = image.cols;
 			int height = image.rows;
 
-			FILE *stream;
+#ifdef _MSC_VER
+	  	FILE *stream;
 			fopen_s(&stream, filename.c_str(), "wb");
+#else
+			FILE *stream = fopen(filename.c_str(), "wb");
+#endif
+
 			if (stream == NULL)
 			{
 				printf("PFM file absent: %s\n\n", filename.c_str());

@@ -3,13 +3,26 @@
 
 #include <omp.h>
 #include <time.h>
+#include <sys/stat.h>
 #include <opencv2/opencv.hpp>
 #include "FastGCStereo.h"
 #include "Evaluator.h"
 #include "ArgsParser.h"
 #include "CostVolumeEnergy.h"
 #include "Utilities.hpp"
+#ifdef _MSC_VER
 #include <direct.h>
+#endif
+
+template <> float ArgsParser::convertStringToValue(std::string str) const{ return std::stof(str); }
+template <> int ArgsParser::convertStringToValue(std::string str) const{ return std::stoi(str); }
+template <> std::string ArgsParser::convertStringToValue(std::string str)const { return str; }
+template <> bool ArgsParser::convertStringToValue(std::string str) const
+{
+	if (str == "true") return true;
+	if (str == "false") return false;
+	return convertStringToValue<int>(str) != 0;
+}
 
 struct Options
 {
@@ -259,7 +272,7 @@ bool loadData(const std::string inputDir, cv::Mat& im0, cv::Mat& im1, cv::Mat& d
 	if(nonocc.empty())
 		nonocc = cv::imread(inputDir + "mask0nocc.png", cv::IMREAD_GRAYSCALE);
 
-	if (!nonocc.empty()) 
+	if (!nonocc.empty())
 		nonocc = nonocc == 255;
 	else
 		nonocc = cv::Mat_<uchar>(im0.size(), 255);
@@ -286,7 +299,11 @@ void MidV2(const std::string inputDir, const std::string outputDir, const Option
 	param.lambda = options.smooth_weight;
 
 	{
-		_mkdir((outputDir + "debug").c_str());
+#ifdef _MSC_VER
+	  _mkdir((outputDir + "debug").c_str());
+#else
+		mkdir((outputDir + "debug").c_str(), 0777);
+#endif
 
 		Evaluator *eval = new Evaluator(dispGT, nonocc, 255.0f / (maxdisp), "result", outputDir + "debug\\");
 		eval->setPrecision(calib.gt_prec);
@@ -375,7 +392,11 @@ void MidV3(const std::string inputDir, const std::string outputDir, const Option
 
 
 	{
-		_mkdir((outputDir + "debug").c_str());
+#ifdef _MSC_VER
+	  _mkdir((outputDir + "debug").c_str());
+#else
+		mkdir((outputDir + "debug").c_str(), 0777);
+#endif
 
 		Evaluator *eval = new Evaluator(dispGT, nonocc, 255.0f / (maxdisp), "result", outputDir + "debug\\");
 		eval->setPrecision(-1);
@@ -408,7 +429,7 @@ void MidV3(const std::string inputDir, const std::string outputDir, const Option
 		delete prop4;
 
 		cvutils::io::save_pfm_file(outputDir + "disp0.pfm", stereo.getEnergyInstance().computeDisparities(labeling));
-		if(options.doDual) 
+		if(options.doDual)
 			cvutils::io::save_pfm_file(outputDir + "disp0raw.pfm", stereo.getEnergyInstance().computeDisparities(rawdisp));
 
 		{
@@ -452,8 +473,13 @@ int main(int argc, const char** args)
 	if (options.threadNum > 0)
 		omp_set_num_threads(options.threadNum);
 
-	if (options.outputDir.length())
-		_mkdir((options.outputDir).c_str());
+	if (options.outputDir.length()) {
+#ifdef _MSC_VER
+	  _mkdir((options.outputDir).c_str());
+#else
+		mkdir((options.outputDir).c_str(), 0777);
+#endif
+  }
 
 	printf("\n\n");
 

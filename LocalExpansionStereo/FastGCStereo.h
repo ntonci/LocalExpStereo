@@ -4,7 +4,7 @@
 #include "Utilities.hpp"
 #include "TimeStamper.h"
 #include "PMStereoBase.h"
-#include "../maxflow/graph.h"
+#include "maxflow/graph.h"
 
 //#define USE_GPU
 
@@ -110,7 +110,9 @@ public:
 
 				const int R = params.windR;
 				cv::Rect filterRegion = cv::Rect(unit.x - R, unit.y - R, unit.width + R * 2, unit.height + R * 2) & imageDomain;
-				stereoEnergy->ComputeUnaryPotential(filterRegion, unit, currentCost(filterRegion), label, NaiveStereoEnergy::Reusable(), mode);
+
+				StereoEnergy::Reusable naive_stereo_reusable = NaiveStereoEnergy::Reusable();
+				stereoEnergy->ComputeUnaryPotential(filterRegion, unit, currentCost(filterRegion), label, naive_stereo_reusable, mode);
 			}
 		}
 		else // May start from a given labeling but this is very slow.
@@ -125,12 +127,16 @@ public:
 				cv::Rect unit(x, y, 1, 1);
 				cv::Rect filterRegion = cv::Rect(unit.x - R, unit.y - R, unit.width + R * 2, unit.height + R * 2) & imageDomain;
 
-				stereoEnergy->ComputeUnaryPotential(filterRegion, unit, currentCost(filterRegion), currentLabeling.at<Plane>(y, x), NaiveStereoEnergy::Reusable(), mode);
+				StereoEnergy::Reusable naive_stereo_reusable = NaiveStereoEnergy::Reusable();
+				stereoEnergy->ComputeUnaryPotential(filterRegion, unit, currentCost(filterRegion), currentLabeling.at<Plane>(y, x), naive_stereo_reusable, mode);
 			}
 		}
 	}
 
-	virtual void run(int maxIteration, const std::vector<int>& viewModes = {0, 1}, int pmInit = 0, cv::Mat& labeling = cv::Mat(), cv::Mat& rawlabeling = cv::Mat())
+	// TODO(ntonci): Removed all the default parameters since this method is
+	// always called with all the params set. However, for the sake of generality,
+	// there should be overload functions setting default parameters.
+	virtual void run(int maxIteration, const std::vector<int>& viewModes, int pmInit, cv::Mat& labeling, cv::Mat& rawlabeling)
 	{
 		for (int mode : viewModes)
 		{
@@ -204,7 +210,7 @@ public:
 
 			if (debug && evaluator != nullptr) evaluator->evaluate(currentLabeling_m_[0], currentCost_[0], *stereoEnergy, true, true, true, maxIteration + 1 + pmInit, 0);
 			if (debug && evaluator != nullptr) evaluator->evaluate(currentLabeling_m_[1], currentCost_[1], *stereoEnergy, true, true, true, maxIteration + 1 + pmInit, 1);
-			
+
 			if(debug)
 			{
 				STOP_TIMER(evaluator);
@@ -255,7 +261,7 @@ protected:
 		// We do not use cost11 here, since they can be ignored with our smoothness term formutation
 
 		int N = region.width * region.height;
-		typedef Graph<float, float, double> G;
+		typedef maxflowLib::Graph<float, float, double> G;
 		G graph(N, 4 * N);
 
 		graph.add_node(N);
@@ -422,7 +428,7 @@ protected:
 		stereoEnergy->computeSmoothnessTermsExpansion(currentLabeling_m, label1, region, cost00, cost01, cost10, true, mode);
 
 		int N = region.width * region.height;
-		typedef Graph<float, float, double> G;
+		typedef maxflowLib::Graph<float, float, double> G;
 		G graph(N, 4 * N);
 
 		graph.add_node(N);
@@ -596,4 +602,3 @@ protected:
 		return flow;
 	}
 };
-

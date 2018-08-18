@@ -52,7 +52,12 @@ public:
 	}
 
 
-	void ComputeUnaryPotentialWithoutCheck(const cv::Rect& filterRect, const cv::Rect& targetRect, const cv::Mat& costs, const Plane& plane, Reusable& reusable = Reusable(), int mode = 0) const override
+	void ComputeUnaryPotentialWithoutCheck(const cv::Rect& filterRect, const cv::Rect& targetRect, const cv::Mat& costs, const Plane& plane, int mode = 0) const override
+	{
+		Reusable reusable = Reusable();
+		ComputeUnaryPotentialWithoutCheck(filterRect, targetRect, costs, plane, reusable, mode);
+	}
+	void ComputeUnaryPotentialWithoutCheck(const cv::Rect& filterRect, const cv::Rect& targetRect, const cv::Mat& costs, const Plane& plane, Reusable& reusable, int mode = 0) const override
 	{
 		if (reusable.pIL.empty())
 		{
@@ -111,7 +116,7 @@ public:
 					C = vol[mode].at<float>(D - 1, y, x);
 				else if (isnan<float>(d_base) || isinf<float>(d_base))
 					C = COST_FOR_INVALID;
-				else 
+				else
 					C = vol[mode].at<float>(d, y, x);
 
 				pC[x - filterRect.x] = std::min(C, params.th_col);
@@ -121,7 +126,7 @@ public:
 		// a = y1. / (d1 - d2). / (d1 - d3);
 		// b = y2. / (d2 - d1). / (d2 - d3);
 		// c = y3. / (d3 - d1). / (d3 - d2);
-		// 
+		//
 		// polynom: r*d ^ 2 + p*d + q
 		// r = a + b + c;
 		// p = -(a.*(d2 + d3) + b.*(d1 + d3) + c.*(d1 + d2));
@@ -173,7 +178,12 @@ public:
 			reusable.pIL(subrect).copyTo(costs(subrect));
 	}
 
-	void ComputeUnaryPotential(const cv::Rect& filterRect, const cv::Rect& targetRect, const cv::Mat& costs, const Plane& plane, Reusable& reusable = Reusable(), int mode = 0) const override
+	void ComputeUnaryPotential(const cv::Rect& filterRect, const cv::Rect& targetRect, const cv::Mat& costs, const Plane& plane, int mode = 0) const override
+	{
+		Reusable reusable = Reusable();
+		ComputeUnaryPotential(filterRect, targetRect, costs, plane, reusable, mode);
+	}
+	void ComputeUnaryPotential(const cv::Rect& filterRect, const cv::Rect& targetRect, const cv::Mat& costs, const Plane& plane, Reusable& reusable, int mode = 0) const override
 	{
 		ComputeUnaryPotentialWithoutCheck(filterRect, targetRect, costs, plane, reusable, mode);
 
@@ -182,4 +192,3 @@ public:
 		costs(subrect).setTo(cv::Scalar(COST_FOR_INVALID), ~validMask);
 	}
 };
-

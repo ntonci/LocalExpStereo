@@ -24,7 +24,7 @@ public:
 	};
 	std::vector<Layer> layers;
 
-	LayerManager& LayerManager::operator=(const LayerManager& obj) {
+	LayerManager& operator=(const LayerManager& obj) {
 		this->layers = obj.layers;
 		return *this;
 	}
@@ -46,7 +46,7 @@ public:
 		Layer layer;
 
 #if 0
-		// This produces cells with irregular (smaller) sizes at left and bottom boundaries. 
+		// This produces cells with irregular (smaller) sizes at left and bottom boundaries.
 		layer.regionUnitSize = unitRegionSize;
 		layer.heightBlocks = (height / unitRegionSize) + ((height % unitRegionSize) ? 1 : 0);
 		layer.widthBlocks  = (width  / unitRegionSize) + ((width  % unitRegionSize) ? 1 : 0);
@@ -54,7 +54,7 @@ public:
 		layer.sharedRegions.resize(layer.heightBlocks * layer.widthBlocks);
 		layer.filterRegions.resize(layer.heightBlocks * layer.widthBlocks);
 		layer.unitRegions.resize(layer.heightBlocks * layer.widthBlocks);
-		
+
 		layer.disjointRegionSets.resize(16);
 		cv::Rect imageDomain(0, 0, width, height);
 
@@ -65,13 +65,13 @@ public:
 				cv::Rect &sharedRegion = layer.sharedRegions[r];
 				cv::Rect &filterRegion = layer.filterRegions[r];
 				cv::Rect &unitRegion   = layer.unitRegions[r];
-				
+
 				unitRegion.x = j * unitRegionSize;
 				unitRegion.y = i * unitRegionSize;
 				unitRegion.width  = unitRegionSize;
 				unitRegion.height = unitRegionSize;
 				unitRegion = unitRegion & imageDomain;
-				
+
 				sharedRegion.x = (j-1) * unitRegionSize;
 				sharedRegion.y = (i-1) * unitRegionSize;
 				sharedRegion.width  = unitRegionSize * 3;
@@ -164,7 +164,7 @@ public:
 			}
 		}
 #endif
-		
+
 		for ( int i = 0; i < layer.heightBlocks; i++ ){
 			for ( int j = 0; j < layer.widthBlocks; j++ ){
 				int r = i*layer.widthBlocks + j;
@@ -184,4 +184,3 @@ public:
 		layers.push_back(layer);
 	}
 };
-
