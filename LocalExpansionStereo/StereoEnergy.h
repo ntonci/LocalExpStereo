@@ -226,18 +226,18 @@ public:
 	{
 		cv::Point pt = ps + neighbors[neighborId];
 		return smoothnessCoeff[mode][neighborId].at<float>(ps + cv::Point(M, M))
-			* std::min(fabs(ls.GetZ(ps) - lt.GetZ(ps)) + fabs(ls.GetZ(pt) - lt.GetZ(pt)), params.th_smooth) * params.lambda;
+			* std::min<double>(fabs(ls.GetZ(ps) - lt.GetZ(ps)) + fabs(ls.GetZ(pt) - lt.GetZ(pt)), params.th_smooth) * params.lambda;
 	}
 
 	float computeSmoothnessTerm(const Plane& ls, const Plane& lt, cv::Point ps, cv::Point pt, int mode = 0) const
 	{
-		return std::max(computePatchWeight(ps, pt, mode), params.epsilon)
-			* std::min(fabs(ls.GetZ(ps) - lt.GetZ(ps)) + fabs(ls.GetZ(pt) - lt.GetZ(pt)), params.th_smooth) * params.lambda;
+		return std::max<double>(computePatchWeight(ps, pt, mode), params.epsilon)
+			* std::min<double>(fabs(ls.GetZ(ps) - lt.GetZ(ps)) + fabs(ls.GetZ(pt) - lt.GetZ(pt)), params.th_smooth) * params.lambda;
 	}
 
 	float computeSmoothnessTermWithoutConst(const Plane& ls, const Plane& lt, cv::Point ps, cv::Point pt) const
 	{
-		return std::min(fabs(ls.GetZ(ps) - lt.GetZ(ps)) + fabs(ls.GetZ(pt) - lt.GetZ(pt)), params.th_smooth);
+		return std::min<double>(fabs(ls.GetZ(ps) - lt.GetZ(ps)) + fabs(ls.GetZ(pt) - lt.GetZ(pt)), params.th_smooth);
 	}
 
 	float computeSmoothnessTermConst(cv::Point ps, cv::Point pt, int mode = 0) const
