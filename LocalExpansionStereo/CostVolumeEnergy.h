@@ -82,7 +82,7 @@ public:
 				float C;
 				if (d < MIN_DISPARITY) C = vol[mode].at<float>(0, y, x);
 				else if (d >= MAX_DISPARITY) C = vol[mode].at<float>(D - 1, y, x);
-				else if (isnan<float>(d) || isinf<float>(d)) C = COST_FOR_INVALID;
+				else if (std::isnan(d) || std::isinf(d)) C = COST_FOR_INVALID;
 				else
 				{
 					int d0 = int(d) + D0;
@@ -114,7 +114,7 @@ public:
 					C = vol[mode].at<float>(0, y, x);
 				else if (d >= D)
 					C = vol[mode].at<float>(D - 1, y, x);
-				else if (isnan<float>(d_base) || isinf<float>(d_base))
+				else if (std::isnan(d_base) || std::isinf(d_base))
 					C = COST_FOR_INVALID;
 				else
 					C = vol[mode].at<float>(d, y, x);
@@ -144,7 +144,7 @@ public:
 					C = vol[mode].at<float>(0, y, x);
 				else if (d2 >= D)
 					C = vol[mode].at<float>(D - 1, y, x);
-				else if (isnan<float>(d) || isinf<float>(d))
+				else if (std::isnan(d) || std::isinf(d))
 					C = COST_FOR_INVALID;
 				else
 				{
