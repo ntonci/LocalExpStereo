@@ -14,3 +14,7 @@ results/
 data/MiddV3/trainingH/Adirondack
 data/MiddV3/trainingH/Vintage
 *.diagsession
+
+.DS_Store
+
+/build/*
