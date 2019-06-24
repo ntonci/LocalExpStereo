@@ -14,7 +14,10 @@ results/
 data/MiddV3/trainingH/Adirondack
 data/MiddV3/trainingH/Vintage
 *.diagsession
-
 .DS_Store
-
 /build/*
+*.dll
+*.log
+*.exe
+x64/
+data/MiddV2/*
