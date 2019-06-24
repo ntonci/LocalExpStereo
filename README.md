@@ -5,22 +5,24 @@
 This is an implementatioin of a stereo matching method described in
 
 ```
-@article{Taniai17,
+@article{Taniai18,
   author    = {Tatsunori Taniai and
                Yasuyuki Matsushita and
                Yoichi Sato and
                Takeshi Naemura},
   title     = {{Continuous 3D Label Stereo Matching using Local Expansion Moves}},
   journal   = {{IEEE Transactions on Pattern Analysis and Machine Intelligence (TPAMI)}},
-  year      = {2017},
-  doi       = {10.1109/TPAMI.2017.2766072}, 
-  note      = {Early access preprint},
+  year      = {2018},
+  volume    = {40},
+  number    = {11},
+  pages     = {2725--2739},
+  doi       = {10.1109/TPAMI.2017.2766072},
 }
 ```
 [[Project Site](http://taniai.space/projects/stereo/)]  [[IEEE preprint](https://ieeexplore.ieee.org/document/8081755/)]  [[arXiv preprint (supplemented)](https://arxiv.org/abs/1603.08328)].
 
 
-The code is for research purpose only. If you use our code, please cite the above paper. We also encourage to cite the following conference paper too, where we describe the fundamental idea of our optimization technique and also propose a MRF stereo model combining the slanted patch matching (Bleyer et al., 2011) and curvature regularization (Olsson et al., 2013) terms used in the both papers.
+The code is for research purpose only. If you use our code, please cite the above paper. Along with our TPAMI paper we also encourage to cite the following conference paper too, where we describe the fundamental idea of our optimization technique and also propose a new MRF stereo model (used in both our CVPR and TPAMI papers) that effectively combines the slanted patch matching (Bleyer et al., 2011) and curvature regularization (Olsson et al., 2013) terms.
 
 ```
 @inproceedings{Taniai14,
@@ -37,7 +39,7 @@ The code is for research purpose only. If you use our code, please cite the abov
 ## Running environment
 - Visual Studio 2017 Community (installed with the VC++ 2015 vc140 toolset if using the following OpenCV build)
 - OpenCV 3 (OpenCV 3.1.0 package will be automatically installed via NuGet upon the initial build)
-- Maxflow code v3.01 by Boykov and Kolmogorov [[Link]](http://vision.csd.uwo.ca/code/)
+- Maxflow code by Boykov and Kolmogorov [[Code v3.01]](http://vision.csd.uwo.ca/code) [[Code v3.04]](http://pub.ist.ac.at/~vnk/software.html)
 
 ## How to Run?
 1. Download and extract maxflow source code to "maxflow" directory. Modify instances.inc to add the following line
